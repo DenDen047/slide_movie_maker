@@ -13,6 +13,9 @@ parser.add_argument('--output',
     action='store',
     default='video.mp4',
     type=str)
+parser.add_argument('--pause',
+    default=10,
+    type=int)
 args = parser.parse_args()
 
 
@@ -21,13 +24,17 @@ def main():
     video = cv2.VideoWriter(args.output, fourcc, 20.0, (720, 405))
 
     # read paths of file
-    files = glob.glob(os.path.join(args.input_dir, '*.png'))
+    files = sorted(glob.glob(os.path.join(args.input_dir, '*.png')))
 
+    # write image
     for f in files:
         img = cv2.imread(f)
         img = cv2.resize(img, (720,405))
-        video.write(img)
+        # pause
+        for _ in range(args.pause):
+            video.write(img)
 
+    # generate
     video.release()
 
 if __name__ == "__main__":
